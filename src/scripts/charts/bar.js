@@ -77,7 +77,8 @@
       grid: 'ct-grid',
       gridGroup: 'ct-grids',
       vertical: 'ct-vertical',
-      horizontal: 'ct-horizontal'
+      horizontal: 'ct-horizontal',
+      greatestValue: 'ct-greatest'
     }
   };
 
@@ -261,7 +262,10 @@
         positions[labelAxis.counterUnits.pos + '1'] = options.stackBars ? previousStack : zeroPoint;
         positions[labelAxis.counterUnits.pos + '2'] = options.stackBars ? stackedBarValues[valueIndex] : projected[labelAxis.counterUnits.pos];
 
-        bar = seriesGroups[seriesIndex].elem('line', positions, options.classNames.bar).attr({
+        var classNames = options.classNames.bar;
+        classNames += value === Math.max.apply(null, series) ? ' ' + options.classNames.greatestValue : '';
+
+        bar = seriesGroups[seriesIndex].elem('line', positions, classNames).attr({
           'value': value,
           'meta': Chartist.getMetaData(series, valueIndex)
         }, Chartist.xmlNs.uri);

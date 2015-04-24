@@ -68,7 +68,7 @@ var Chartist = {
     var sources = Array.prototype.slice.call(arguments, 1);
     sources.forEach(function(source) {
       for (var prop in source) {
-        if (typeof source[prop] === 'object' && !(source[prop] instanceof Array)) {
+        if (typeof source[prop] === 'object' && source[prop] !== null && !(source[prop] instanceof Array)) {
           target[prop] = Chartist.extend({}, target[prop], source[prop]);
         } else {
           target[prop] = source[prop];
@@ -2846,7 +2846,8 @@ var Chartist = {
       grid: 'ct-grid',
       gridGroup: 'ct-grids',
       vertical: 'ct-vertical',
-      horizontal: 'ct-horizontal'
+      horizontal: 'ct-horizontal',
+      greatestValue: 'ct-greatest'
     }
   };
 
@@ -3030,7 +3031,10 @@ var Chartist = {
         positions[labelAxis.counterUnits.pos + '1'] = options.stackBars ? previousStack : zeroPoint;
         positions[labelAxis.counterUnits.pos + '2'] = options.stackBars ? stackedBarValues[valueIndex] : projected[labelAxis.counterUnits.pos];
 
-        bar = seriesGroups[seriesIndex].elem('line', positions, options.classNames.bar).attr({
+        var classNames = options.classNames.bar;
+        classNames += value === Math.max.apply(null, series) ? ' ' + options.classNames.greatestValue : '';
+
+        bar = seriesGroups[seriesIndex].elem('line', positions, classNames).attr({
           'value': value,
           'meta': Chartist.getMetaData(series, valueIndex)
         }, Chartist.xmlNs.uri);
