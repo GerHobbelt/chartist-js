@@ -14,7 +14,7 @@
   }
 }(this, function () {
 
-/* Chartist.js 0.7.4
+/* Chartist.js 0.7.6
  * Copyright © 2015 Gion Kunz
  * Free to use under the WTFPL license.
  * http://www.wtfpl.net/
@@ -25,7 +25,7 @@
  * @module Chartist.Core
  */
 var Chartist = {
-  version: '0.7.4'
+  version: '0.7.6'
 };
 
 (function (window, document, Chartist) {
@@ -2836,6 +2836,10 @@ var Chartist = {
     horizontalBars: false,
     // If true the whole data is reversed including labels, the series order as well as the whole series data arrays.
     reverseData: false,
+    // If set to true bars with chart are centered between grid lines
+    barsCentered: true,
+    // Specify a fixed width for chart bars. Include this value to left align bars when barsCentered is false.
+    barsStrokeWidth: undefined,
     // Override the class names that get used to generate the SVG structure of the chart
     classNames: {
       chart: 'ct-chart-bar',
@@ -3013,10 +3017,13 @@ var Chartist = {
             y: chartRect.y1 - (options.horizontalBars ? labelAxis : valueAxis).projectValue(value, valueIndex, normalizedData[seriesIndex]).pos
           },
           bar,
-          previousStack;
+          previousStack,
+          barOffset;
 
-        // Offset to center bar between grid lines
-        projected[labelAxis.units.pos] += periodHalfLength * (options.horizontalBars ? -1 : 1);
+        // Offset to center bar between grid lines || left align bar
+        barOffset = options.barsCentered ? periodHalfLength * (options.horizontalBars ? -1 : 1) : (options.barsStrokeWidth ? options.barsStrokeWidth / 2 : 0);
+        projected[labelAxis.units.pos] += barOffset;
+
         // Using bi-polar offset for multiple series if no stacked bars are used
         projected[labelAxis.units.pos] += options.stackBars ? 0 : biPol * options.seriesBarDistance * (options.horizontalBars ? -1 : 1);
 
@@ -3038,6 +3045,13 @@ var Chartist = {
           'value': value,
           'meta': Chartist.getMetaData(series, valueIndex)
         }, Chartist.xmlNs.uri);
+
+        // Add the stroke-width as style attribute if defined
+        if (!!options.barsStrokeWidth) {
+          bar.attr({
+            'style': 'stroke-width: ' + (+options.barsStrokeWidth) + 'px'
+          });          
+        }
 
         this.eventEmitter.emit('draw', Chartist.extend({
           type: 'bar',
@@ -3112,8 +3126,7 @@ var Chartist = {
     createChart: createChart
   });
 
-}(window, document, Chartist));
-;/**
+}(window, document, Chartist));;/**
  * The pie chart module of Chartist that can be used to draw pie, donut or gauge charts
  *
  * @module Chartist.Pie
