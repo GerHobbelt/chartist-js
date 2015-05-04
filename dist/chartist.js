@@ -14,7 +14,7 @@
   }
 }(this, function () {
 
-/* Chartist.js 0.7.6
+/* Chartist.js 0.7.7
  * Copyright © 2015 Gion Kunz
  * Free to use under the WTFPL license.
  * http://www.wtfpl.net/
@@ -25,7 +25,7 @@
  * @module Chartist.Core
  */
 var Chartist = {
-  version: '0.7.6'
+  version: '0.7.7'
 };
 
 (function (window, document, Chartist) {
